@@ -13,7 +13,6 @@ To run the file type:
 
 python merge.py
 
-
 2) For running the simulations.
 
 Install dependencies
@@ -24,11 +23,9 @@ To run the file type:
 
 python filename.py
 
-
 3) For creating probes by web interface.
 
 https://tdblab.github.io/hcrprobedesigner/hcr_22.1.html
-
 
 4) For the excel sheets for creating probes.
 
@@ -39,11 +36,11 @@ specific to the selected pairs of complementary sites. Briefly, a candidate gene
 macro (https://github.com/LJI-Bioinformatics/Excel-Reverse-Complement) is loaded into the MS Excel sheet. This produces 25 bp pairs of 
 nucleotides, which are copied and pasted to the amplifier_adder.xml file that contains the secondary fluorescent-specific amplifier sequence. 
 
-
 5) For 3D printing of files.
 
 For 3D printing, the microscope plate (Olympus FV3000 specific) and the magnetic lock, download the CAD files from the github link. Open 
-the .stl file in any 3D printer file slicer. In the current work, we have used Ultimaker Cura. In the slicing software, select your 3D printer 
+the .stl file in any 3D printer file slicer. In the current work, we have used Ultimaker Cura (https://ultimaker.com/de/software/ultimaker-cura/#downloads).
+In the slicing software, select your 3D printer 
 and use PLA+ or PETG specific settings with an infill density of 50%. Save your .gcode file in an external memory (USB) and 3D print. Note: 
 Black filament is ideal. But the user can select any color.
 
