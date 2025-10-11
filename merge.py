@@ -4,7 +4,7 @@ import numpy as np
 from glob import glob
 from PIL import Image, ImageDraw, ImageFont
 
-# --- Settings ---
+# Settings
 IMAGE_DIR = "multiplex_fish_images"
 EXTENSIONS = ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff']
 GENE_COLORS = [
@@ -20,7 +20,7 @@ GENE_COLORS = [
     (128, 128, 0),   # Olive
 ]
 
-# --- Helper Functions ---
+# Helper Functions
 def load_images_from_folder(folder):
     image_paths = []
     for ext in EXTENSIONS:
@@ -73,7 +73,7 @@ def add_color_legend(image, gene_names, gene_colors, side="right"):
 
     return np.array(img_pil)
 
-# --- Main Pipeline ---
+# Main Pipeline
 image_paths = load_images_from_folder(IMAGE_DIR)
 gene_names = [os.path.splitext(os.path.basename(p))[0] for p in image_paths]
 print("Detected genes:", gene_names)
@@ -100,3 +100,4 @@ cv2.imwrite(output_path, composite)
 cv2.imshow("Merged Composite", composite)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
