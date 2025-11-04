@@ -20,7 +20,7 @@ GENE_COLORS = [
     (128, 128, 0),   # Olive
 ]
 
-# Helper Functions
+# Helper functions
 def load_images_from_folder(folder):
     image_paths = []
     for ext in EXTENSIONS:
@@ -82,16 +82,13 @@ print("Detected genes:", gene_names)
 base_img = cv2.imread(image_paths[0])
 composite = np.zeros_like(base_img, dtype=np.uint8)
 
-# Merge each image with assigned color
+# Merge each image with the assigned color
 for i, path in enumerate(image_paths):
     img = cv2.imread(path)
     color = GENE_COLORS[i % len(GENE_COLORS)]
     composite = assign_color_and_merge(composite, img, color)
 
-# Desaturate for softer blend
-composite = desaturate(composite, factor=0.00)
-
-# Add gene-color legend only on the right
+# Add gene color legend only on the right
 composite = add_color_legend(composite, gene_names, GENE_COLORS, side="right")
 
 # Save and display
@@ -100,4 +97,5 @@ cv2.imwrite(output_path, composite)
 cv2.imshow("Merged Composite", composite)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
 
