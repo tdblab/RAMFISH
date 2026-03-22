@@ -111,7 +111,7 @@ void loop()
   }
   
    
-    if(tempC2 < 45){
+    if(tempC2 < 40){
       digitalWrite(RELAY_PIN, HIGH); // turn on relay
       digitalWrite(RELAY_PIN2, HIGH);
       
