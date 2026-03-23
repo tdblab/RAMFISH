@@ -24,7 +24,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // I2C display
 int tempPin1 = A0;  //heater1          
 int tempPin2 = A2;  //heater2
 
-int tempPin3 = A3;  //chamber_temperature
+int tempPin3 = A1;  //chamber_temperature
 
 
 void setup()
