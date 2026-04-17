@@ -1,7 +1,7 @@
-//Temperature controller
-//Designed and programmed by: Dr. Tirtha Das Banerjee,  Department of Biological Sciences and Yong Loo Lin School of Medicine, National University of Singapore
-//Date first written: 6th Oct 2024
-//Date last modified: 23rd March 2026
+//Temperature and humidity monitor and controller
+//Designed and programmed by: Dr. Tirtha Das Banerjee, Senior Research Fellow, Department of Biological Sciences, National University of Singapore
+//Date first written: 6th Oct 2023
+//Date last modified: 10th June 2024
 
 //Attach DHT library
 //#include <DHT.h>
@@ -21,10 +21,10 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // I2C display
 
 
 
-int tempPin1 = A0;  //heater1          
-int tempPin2 = A2;  //heater2
+int tempPin1 = A1;  //heater1          //pin connected to thermistor
+int tempPin2 = A2;  //heater 2
 
-int tempPin3 = A1;  //chamber_temperature
+//int tempPin3 = A3;  //plate
 
 
 void setup()
@@ -74,14 +74,14 @@ void loop()
   int tempC2 = tempK2 - 273.15;            // Convert Kelvin to Celcius
   float tempF2 = (tempC2 * 9.0)/ 5.0 + 32.0; // Convert Celcius to Fahrenheit
 
-
+/*
   int tempReading3 = analogRead(tempPin3);
 
   double tempK3 = log(10000.0 * ((1024.0 / tempReading3 - 1)));
   tempK3 = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * tempK3 * tempK3 )) * tempK3 );       //  Temp Kelvin
   int tempC3 = tempK3 - 273.15;            // Convert Kelvin to Celcius
   float tempF3 = (tempC3 * 9.0)/ 5.0 + 32.0; // Convert Celcius to Fahrenheit
-
+*/
   
     lcd.clear();
   // check if any reads failed
@@ -101,27 +101,28 @@ void loop()
     lcd.print(tempC2);     
     lcd.print((char)223); 
     lcd.print("C");
-
+/*
     lcd.setCursor(0, 1);  
     lcd.print("Plate Temp:");
     lcd.print(tempC3);     
     lcd.print((char)223); 
     lcd.print("C"); 
-
+*/
   }
   
-   
-    if(tempC2 < 40){
-      digitalWrite(RELAY_PIN, HIGH); // turn on relay
-      digitalWrite(RELAY_PIN2, HIGH);
-      
-    } 
+//Logiv for Heater 1
+    if (tempC < 45) {
+  digitalWrite(RELAY_PIN, HIGH); // Heat up
+} else {
+  digitalWrite(RELAY_PIN, LOW);  // Goal reached
+}
 
-    else {
-      digitalWrite(RELAY_PIN, LOW); // turn off relay
-      digitalWrite(RELAY_PIN2, LOW);
-      delay(1000);
-    }
+// Logic for Heater 2
+if (tempC2 < 45) {
+  digitalWrite(RELAY_PIN2, HIGH); // Heat up
+} else {
+  digitalWrite(RELAY_PIN2, LOW);  // Goal reached
+}
 
 
 
