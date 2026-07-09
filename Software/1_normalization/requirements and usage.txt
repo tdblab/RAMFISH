@@ -1,0 +1,14 @@
+Usage:
+Contains folder rawdata (copy the files generated from Imaris Viewer here) and the script ramfish_normalization.py.
+To run normalization, open the terminal in the folder and run the following command:
+
+python ramfish_normalization.py
+
+Output: A new folder normalized_data with the normalized images will be generated.
+
+
+Requirements:
+pip install tifffile scipy numpy
+pip install cupy-cuda12x  # Replace '12x' with your specific CUDA version (e.g., 11x for CUDA 11)
+pip install "cupy-cuda12x[ctk]"
+

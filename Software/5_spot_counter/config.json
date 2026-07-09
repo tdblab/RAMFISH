@@ -1,0 +1,18 @@
+{
+    "settings": {
+        "blob_min_sigma": 2,
+        "blob_max_sigma": 5,
+        "blob_num_sigma": 4,
+        "blob_threshold": 0.30,
+        "intensity_cutoff": 0.25,
+        "synthetic_spot_radius": 4
+    },
+    "descriptions": {
+        "blob_min_sigma": "The minimum expected spot radius (in pixels). Decrease this value if small, sharp points are being missed.",
+        "blob_max_sigma": "The maximum expected spot radius (in pixels). Increase this value if larger, brighter spots are being ignored.",
+        "blob_num_sigma": "The number of intermediate size steps checked between min and max sigma. Default is 4.",
+        "blob_threshold": "The initial peak-detection sensitivity. Lower values capture dimmer spots; higher values filter for high-contrast peaks.",
+        "intensity_cutoff": "The absolute brightness barrier used to eliminate tissue autofluorescence. Scaled strictly from 0.0 to 1.0. Formula: (Desired Camera Cutoff Count) / (Max Bit Depth). E.g., 20000 / 65535 = 0.305.",
+        "synthetic_spot_radius": "The radius (in pixels) of the rendered dots in the synthetic output images. Increase this value to make the spots larger in the final multiplexed merge."
+    }
+}
