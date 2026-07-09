@@ -1,6 +1,6 @@
 # RAMFISH Software Suite
 
-The **RAMFISH Software Suite** is an open-source computational pipeline engineered to handle multiplexed spatial domain datasets generated from the RAMFISH workflow. 
+The **RAMFISH Software Suite (inside the Software folder)** is an open-source computational pipeline engineered to handle multiplexed spatial domain datasets generated from the RAMFISH workflow. 
 
 This pipeline processes high-resolution microscope channels by integrating GPU-accelerated intensity normalization, full-stack visual rough alignment, automated non-rigid B-Spline registration, and multi-core mRNA spot segmentation. By standardizing coordinate space across iterative hybridization rounds and stripping away complex background autofluorescence, the suite empowers researchers to seamlessly reconstruct publication-grade, high-dimensional composite spatial expression maps across intact tissue architectures.
 
