@@ -34,12 +34,12 @@ Open your terminal and install the required dependencies.
 
 For modern GPUs (CUDA 12.x), run:
 ```bash
-pip install numpy cupy-cuda12x imageio opencv-python tifffile flask SimpleITK fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
+pip install numpy cupy-cuda12x imageio opencv-python tifffile flask SimpleITK scipy fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
 ```
 
 If you are running the pipeline on an older GPU (CUDA 11.x), run:
 ```bash
-pip install numpy cupy-cuda11x imageio opencv-python tifffile flask SimpleITK fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
+pip install numpy cupy-cuda11x imageio opencv-python tifffile flask SimpleITK scipy fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
 ```
 
 ---
