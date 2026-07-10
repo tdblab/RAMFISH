@@ -1,0 +1,1 @@
+Keep all the spot extracted image files here.
