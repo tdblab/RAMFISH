@@ -74,7 +74,7 @@ Rigid SimpleITK-based B-Spline registration frameworks frequently fail when conf
 
 * **Setup:** Organize normalized files into their respective sequence folders (`Round_1/`, `Round_2/`, ... `Round_N/`).
 * **Execution:** `python ramfish_rough_aligner.py`
-* **Usage:** A local web interface will launch in your browser. Select your `Round_1` baseline image as the absolute fixed anchor and corresponding moving reference images for downstream folders. Adjust UI tools (Opacity, Scale, Rotation, X/Y Translate, Flip) until structural features match. Click **"Apply Rough Alignment to Folder"** to batch-transform every other target gene channel in that round's folder. An illustration of the UI is provided in Figure S17.
+* **Usage:** A local web interface will launch in your browser. Select your `Round_1` baseline image as the absolute fixed anchor and corresponding moving reference images for downstream folders. Adjust UI tools (Opacity, Scale, Rotation, X/Y Translate, Flip) until structural features match. Click **"Apply Rough Alignment to Folder"** to batch-transform every other target gene channel in that round's folder. 
 
 
 * **Output:** Transformed files are updated directly inside their native sequence directory, prefixed as `ALIGNED_`.
@@ -84,7 +84,7 @@ Ensures high-fidelity spatial registration by mapping all sequential datasets ba
 
 * **Setup:** Migrate roughly aligned (`ALIGNED_`) entries into the active `Round_X/` folders. Ensure *only* these files occupy the workspace.
 * **Execution:** `python ramfish_fine_aligner.py`
-* **Usage:** In the browser console, specify multiplex constraints in "Total FISH Rounds". Designate your static anchor in "Round 1 (Global Fixed Reference)". Sequentially load your Structural Reference and Target Genes for subsequent rounds. Select **"Run Batch Alignment"**. (An illustration of the UI is provided in Figure S18).
+* **Usage:** In the browser console, specify multiplex constraints in "Total FISH Rounds". Designate your static anchor in "Round 1 (Global Fixed Reference)". Sequentially load your Structural Reference and Target Genes for subsequent rounds. Select **"Run Batch Alignment"**. 
 
 
 * **Output:** Compiled in the `aligned_outputs/` directory with standardized prefixes (e.g., `R2_aligned_...`).
@@ -111,7 +111,7 @@ Utilizes a parallelized Laplacian of Gaussian (LoG) blob detection algorithm wit
 Integrates the discrete spatial coordinates of detected spots from all sequential rounds into a unified, high-dimensional multiplexed-FISH map, providing a global view of combinatorial gene expression across the tissue architecture.
 
 * **Execution:** Open `ramfish_merger.html` locally in your browser.
-* **Usage:** Load target channels from your `synthetic_spots/` directory. Ensure files follow the `gene_name.file_extension` format (e.g., `ptc.jpg`, `hh.jpg`). **Designate your structural template layer strictly as `DAPI.jpg`**. The tool supports up to 30 distinct multiplex channels simultaneously and allows for dynamic UI configurations (background noise floors, gamma curves, figure legends). An illustration of the UI is provided in Figure S19.
+* **Usage:** Load target channels from your `synthetic_spots/` directory. Ensure files follow the `gene_name.file_extension` format (e.g., `ptc.jpg`, `hh.jpg`). **Designate your structural template layer strictly as `DAPI.jpg`**. The tool supports up to 30 distinct multiplex channels simultaneously and allows for dynamic UI configurations (background noise floors, gamma curves, figure legends). 
 
 ![Merger UI](images/Figure_S19.jpg)
 
