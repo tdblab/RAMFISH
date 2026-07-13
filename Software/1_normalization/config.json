@@ -6,7 +6,7 @@
     "valid_extensions": [".tif", ".tiff", ".png", ".jpg", ".jpeg", ".bmp"],
     "target_intensity": 60000.0,
     "blur_sigma": 50,
-    "percentile": 99.99
+    "percentile": 99.5
   },
   "descriptions": {
     "raw_dir": "The directory containing your raw, high-resolution input images.",
