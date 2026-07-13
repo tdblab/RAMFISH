@@ -10,10 +10,10 @@ This pipeline processes high-resolution microscope channels by integrating GPU-a
 
 The pipeline is capable of running on most desktop-grade PCs equipped with a dedicated GPU. 
 
-* **Optimum Configuration:** * **CPU:** AMD Ryzen 5 5600X / Intel Core i5-12400F
+* **Optimum Configuration:**  **CPU:** AMD Ryzen 5 5600X / Intel Core i5-12400F
   * **GPU:** NVIDIA RTX 3060
   * **RAM:** 32GB DDR4
-* **High-Performance Configuration:** * **CPU:** AMD Ryzen Threadripper 9965WX
+* **High-Performance Configuration:**  **CPU:** AMD Ryzen Threadripper 9965WX
   * **GPU:** NVIDIA RTX 5080 or 5090
   * **RAM:** 128GB DDR5
 * **Operating Systems Tested:** Windows 11, Ubuntu 24.04.
@@ -123,7 +123,6 @@ Integrates the discrete spatial coordinates of detected spots from all sequentia
 * **Execution:** Open `ramfish_merger.html` locally in your browser.
 * **Usage:** Load target channels from your `synthetic_spots/` directory. Ensure files follow the `gene_name.file_extension` format (e.g., `ptc.jpg`, `hh.jpg`). **Designate your structural template layer strictly as `DAPI.jpg`**. The tool supports up to 30 distinct multiplex channels simultaneously and allows for dynamic UI configurations (background noise floors, gamma curves, figure legends). 
 
-![Merger UI](images/Figure_S19.jpg)
 
 * **Output:** Generates and exports a publication-grade, multi-color composite spatial map matching native resolution.
 * **Web Portal:** An open-access web deployment of this module is actively available at [tirthadasbanerjee.com/assets/tools/ramfishmerger.html](https://tirthadasbanerjee.com/assets/tools/ramfishmerger.html).
