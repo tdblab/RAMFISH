@@ -34,12 +34,12 @@ Open your terminal and install the required dependencies.
 
 For modern GPUs (CUDA 12.x), run:
 ```bash
-pip install numpy cupy-cuda12x imageio opencv-python tifffile flask SimpleITK scipy fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
+pip install numpy cupy-cuda12x[ctk] imageio imagecodecs opencv-python tifffile flask SimpleITK fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
 ```
 
 If you are running the pipeline on an older GPU (CUDA 11.x), run:
 ```bash
-pip install numpy cupy-cuda11x imageio opencv-python tifffile flask SimpleITK scipy fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
+pip install numpy cupy-cuda11x[ctk] imageio imagecodecs opencv-python tifffile flask SimpleITK fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
 ```
 
 ---
@@ -54,6 +54,9 @@ pip install numpy cupy-cuda11x imageio opencv-python tifffile flask SimpleITK sc
 ---
 
 ## 🚀 Pipeline Workflow
+
+<img width="2870" height="654" alt="fig1_2 - Copy" src="https://github.com/user-attachments/assets/fd670124-4698-46b1-b936-b0772d8c781e" />
+
 
 ### 1. Normalization (`1_normalization`)
 To resolve intensity discrepancies across iterative multiplexed imaging cycles, this module uses a GPU-accelerated standardization protocol to equalize brightness and contrast. It converts multichannel inputs into a unified grayscale representation, utilizes a heavy Gaussian blur filter to estimate and subtract non-uniform illumination, and computes a dynamic intensity upper-bound to filter out hot-pixel anomalies.
@@ -70,6 +73,8 @@ To resolve intensity discrepancies across iterative multiplexed imaging cycles, 
 * **Output:** Compiled in the `normalized_data/` directory.
 
 ### 2. Rough Aligner (`2_rough_aligner`)
+<img width="1282" height="898" alt="1" src="https://github.com/user-attachments/assets/7d405bd8-2ed1-49fd-8397-7275cd353abd" />
+
 Rigid SimpleITK-based B-Spline registration frameworks frequently fail when confronted with heavy geometric deformations or tissue flipping. This hybrid interactive application bridges visual micro-manipulation with high-resolution spatial matrices.
 
 * **Setup:** Organize normalized files into their respective sequence folders (`Round_1/`, `Round_2/`, ... `Round_N/`).
@@ -80,6 +85,8 @@ Rigid SimpleITK-based B-Spline registration frameworks frequently fail when conf
 * **Output:** Transformed files are updated directly inside their native sequence directory, prefixed as `ALIGNED_`.
 
 ### 3. Fine Aligner (`3_fine_aligner`)
+<img width="1171" height="654" alt="2" src="https://github.com/user-attachments/assets/5d194703-db15-42fe-a04f-f6985a4e02a0" />
+
 Ensures high-fidelity spatial registration by mapping all sequential datasets back to the absolute `Round_1` coordinate grid. It calculates a global affine matrix transformation followed by a non-rigid B-Spline deformable registration algorithm (via SimpleITK) to compensate for localized elastic tissue distortions (stretching, shrinkage).
 
 * **Setup:** Migrate roughly aligned (`ALIGNED_`) entries into the active `Round_X/` folders. Ensure *only* these files occupy the workspace.
@@ -108,6 +115,9 @@ Utilizes a parallelized Laplacian of Gaussian (LoG) blob detection algorithm wit
   * `synthetic_spots/`: Binarized, zero-background synthetic dot images used for final merging.
 
 ### 5. Merger (`5_merger`)
+<img width="1296" height="874" alt="3" src="https://github.com/user-attachments/assets/3f2292ab-9392-4c17-a170-095c52958ba5" />
+
+
 Integrates the discrete spatial coordinates of detected spots from all sequential rounds into a unified, high-dimensional multiplexed-FISH map, providing a global view of combinatorial gene expression across the tissue architecture.
 
 * **Execution:** Open `ramfish_merger.html` locally in your browser.
