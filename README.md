@@ -133,4 +133,4 @@ Integrates the discrete spatial coordinates of detected spots from all sequentia
 If you use the RAMFISH Software Suite in your research, please cite the foundational methodology:
 
 > **Rapid Amplified Multiplexed-FISH (RAM-FISH)**
-> Preprint available on bioRxiv: [doi: 10.1101/2024.12.06.627193](https://doi.org/10.1101/2024.12.06.627193)
+> Preprint available on bioRxiv: [[doi: 10.1101/2024.12.06.627193](https://doi.org/10.1101/2024.12.06.627193)](https://www.biorxiv.org/content/10.1101/2024.12.06.627193v4)
