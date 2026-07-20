@@ -4,6 +4,8 @@ The **RAMFISH Software Suite (inside the Software folder)** is an open-source co
 
 This pipeline processes high-resolution microscope channels by integrating GPU-accelerated intensity normalization, full-stack visual rough alignment, automated non-rigid B-Spline registration, and multi-core mRNA spot segmentation. By standardizing coordinate space across iterative hybridization rounds and stripping away complex background autofluorescence, the suite empowers researchers to seamlessly reconstruct publication-grade, high-dimensional composite spatial expression maps across intact tissue architectures.
 
+<img width="2816" height="959" alt="RAMFISH_2" src="https://github.com/user-attachments/assets/28afd7ab-7c1e-4c6d-9ba5-3f907ffe54d2" />
+
 ---
 
 ## 💻 Hardware Requirements
