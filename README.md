@@ -480,9 +480,9 @@ This enables visualization and analysis of multiplexed gene-expression patterns 
 
 # 📜 Citation
 
-If you use the RAMFISH Software Suite in your research, please cite the foundational RAM-FISH methodology:
+If you use the RAMFISH Software Suite in your research, please cite the foundational RAMFISH methodology:
 
-**Rapid Amplified Multiplexed-FISH (RAM-FISH)**
+**Rapid Amplified Multiplexed FISH (RAMFISH)**
 
 bioRxiv preprint: https://www.biorxiv.org/content/10.1101/2024.12.06.627193v4
 
@@ -521,6 +521,6 @@ email to: tirtha_banerjee@u.nus.edu (Tirtha Das Banerjee)
 
 ## 🧬 RAMFISH
 
-**Rapid Amplified Multiplexed-FISH Software Suite**
+**Rapid Amplified Multiplexed FISH Software Suite**
 
 A computational framework for converting iterative multiplexed microscopy rounds into unified spatial transcriptomic maps.
