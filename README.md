@@ -1,136 +1,526 @@
-# RAMFISH Software Suite
+# 🔬 RAMFISH Software Suite
 
-The **RAMFISH Software Suite (inside the Software folder)** is an open-source computational pipeline engineered to handle multiplexed spatial domain datasets generated from the RAMFISH workflow. 
+<img width="2816" height="959" alt="1" src="https://github.com/user-attachments/assets/05cbdd9a-5e4f-4d34-b316-4d39fa01ff0b" />
 
-This pipeline processes high-resolution microscope channels by integrating GPU-accelerated intensity normalization, full-stack visual rough alignment, automated non-rigid B-Spline registration, and multi-core mRNA spot segmentation. By standardizing coordinate space across iterative hybridization rounds and stripping away complex background autofluorescence, the suite empowers researchers to seamlessly reconstruct publication-grade, high-dimensional composite spatial expression maps across intact tissue architectures.
+The **RAMFISH Software Suite** is an open-source computational pipeline engineered to handle multiplexed spatial-domain datasets generated from the **RAMFISH workflow**.
 
----
+The suite processes high-resolution microscopy channels through a user-friendly web GUI for proprietary-file conversion and GPU-accelerated intensity normalization, interactive visual rough alignment, automated non-rigid B-Spline registration, and multi-core mRNA spot segmentation.
 
-## 💻 Hardware Requirements
-
-The pipeline is capable of running on most desktop-grade PCs equipped with a dedicated GPU. 
-
-* **Optimum Configuration:**  **CPU:** AMD Ryzen 5 5600X / Intel Core i5-12400F
-  * **GPU:** NVIDIA RTX 3060
-  * **RAM:** 32GB DDR4
-* **High-Performance Configuration:**  **CPU:** AMD Ryzen Threadripper 9965WX
-  * **GPU:** NVIDIA RTX 5080 or 5090
-  * **RAM:** 128GB DDR5
-* **Operating Systems Tested:** Windows 11, Ubuntu 24.04.
+By standardizing coordinate space across iterative hybridization rounds, RAMFISH enables researchers to reconstruct publication-grade, high-dimensional composite spatial-expression maps across intact tissue architectures.
 
 ---
 
-## 🛠️ Prerequisites & Installation
+## 🌱 Beginner-Friendly Installation Guide
 
-### Core Applications
-Install the following core applications prior to executing the pipeline:
-* **Python 3.13+**: Install from the Microsoft Store or the [official Python website](https://www.python.org/).
-* **Web Browser**: [Google Chrome](https://www.google.com/chrome/) or [Mozilla Firefox](https://www.firefox.com/).
-* **Imaris Utilities**: Imaris Viewer and Imaris File Converter from the [official website](https://imaris.oxinst.com/).
-* **IDE**: [Visual Studio Code (VS Code)](https://code.visualstudio.com/).
+If you are new to Python or terminals, follow these copy-paste steps to set up a dedicated environment using **Miniconda**.
 
-### Python Dependencies
-Open your terminal and install the required dependencies. 
+### Step 1: Install Miniconda
 
-For modern GPUs (CUDA 12.x), run:
+Download and install Miniconda for your operating system from the official documentation:
+
+- **Windows:** Install the Python 3.12 64-bit Miniconda installer. During installation, select **Just Me**. Adding Miniconda to `PATH` is optional; using the Miniconda Prompt is recommended.
+- **Linux (x86_64):** Run:
+
 ```bash
-pip install numpy cupy-cuda12x[ctk] imageio imagecodecs opencv-python tifffile flask SimpleITK fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm -f ~/miniconda3/miniconda.sh
+~/miniconda3/bin/conda init bash
 ```
 
-If you are running the pipeline on an older GPU (CUDA 11.x), run:
+- **macOS Apple Silicon (M1/M2/M3/M4):** Install the `MacOSX-arm64` Miniconda package.
+- **macOS Intel:** Install the `MacOSX-x86_64` Miniconda package.
+
+Official Miniconda documentation:
+
+https://docs.conda.io/en/latest/
+
+---
+
+### Step 2: Create the RAMFISH Environment
+
+Open **Anaconda Prompt / Miniconda Prompt** on Windows, or a terminal on macOS/Linux.
+
+Run the following commands one at a time:
+
+#### 1. Create the environment
+
 ```bash
-pip install numpy cupy-cuda11x[ctk] imageio imagecodecs opencv-python tifffile flask SimpleITK fastapi uvicorn python-multipart pandas pillow scikit-image tqdm
+conda create -n ramfish python=3.12 -y
+```
+
+#### 2. Activate the environment
+
+```bash
+conda activate ramfish
+```
+
+#### 3. Install Java and Bio-Formats support
+
+```bash
+conda install -c conda-forge bioformats_jar openjdk maven -y
+```
+
+#### 4. Install the core pipeline dependencies
+
+```bash
+pip install streamlit pandas numpy plotly tifffile scipy scikit-image "aicsimageio>=4.14,<5" "numcodecs<0.16.0" "starlette==0.46.0" ome-zarr scyjava imagecodecs opencv-python flask SimpleITK fastapi uvicorn python-multipart pillow tqdm
+```
+
+#### 5. Optional: Install NVIDIA GPU acceleration
+
+For NVIDIA GPUs supporting CUDA 12.x:
+
+```bash
+pip install "cupy-cuda12x[ctk]"
+```
+
+For systems using CUDA 11.x, use:
+
+```bash
+pip install "cupy-cuda11x[ctk]"
+```
+
+> **Note:** CuPy installation should match the CUDA environment supported by your NVIDIA driver/GPU.
+
+---
+
+
+# 💻 Hardware Requirements
+
+RAMFISH is designed to run on standard desktop workstations, with optional NVIDIA GPU acceleration.
+
+### Recommended Configuration
+
+| Component | Recommended |
+|---|---|
+| CPU | AMD Ryzen 5 5600X / Intel Core i5-12400F |
+| GPU | NVIDIA RTX 3060 |
+| RAM | 32 GB DDR4 |
+| Storage | SSD recommended |
+
+### High-Performance Configuration
+
+| Component | High Performance |
+|---|---|
+| CPU | AMD Ryzen Threadripper 9965WX |
+| GPU | NVIDIA RTX 5080 / RTX 5090 |
+| RAM | 128 GB DDR5 |
+| Storage | High-speed NVMe SSD |
+
+### Tested Operating Systems
+
+- Windows 11
+- Ubuntu 24.04
+
+> Performance depends strongly on image dimensions, number of channels, number of hybridization rounds, Z-stack size, available RAM, and GPU memory.
+
+---
+
+# 🛠️ Pipeline Workflow
+
+The RAMFISH Software Suite consists of five major processing stages.
+
+```text
+Raw Microscopy Data
+        │
+        ▼
+┌─────────────────────────┐
+│ 1. Normalization/Export │
+│ ramfish_processor.py    │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 2. Rough Alignment      │
+│ ramfish_rough_aligner.py│
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 3. Fine Alignment       │
+│ ramfish_fine_aligner.py │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 4. mRNA Spot Detection  │
+│ ramfish_spotcounter.py  │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ 5. Multiplexed Merger   │
+│ ramfish_merger.html     │
+└────────────┬────────────┘
+             │
+             ▼
+      Multiplexed Spatial
+       Expression Map
+```
+<img width="2870" height="714" alt="2" src="https://github.com/user-attachments/assets/078481dd-f1a7-4c34-9e0f-926e7bf90d37" />
+
+---
+
+### Launch
+
+Activate the environment:
+
+```bash
+conda activate ramfish
+```
+
+Navigate to the RAMFISH software directory:
+
+```bash
+cd path/to/your/RAMFISH/software/folder
+```
+---
+
+## 1. Normalization & Exporter
+
+### `ramfish_processor.py`
+
+The normalization stage ingests raw microscopy files and prepares standardized images for downstream registration.
+
+Processing includes:
+
+- Robust percentile-based brightness/contrast normalization
+- Local background subtraction using Gaussian filtering
+- Z-stack MIP generation
+- Standardized image export
+- Optional GPU acceleration
+
+ ### Run
+
+```bash
+streamlit run ramfish_processor.py
+```
+A browser window should open automatically with the **RAMFISH Unified Processor** interface.
+<img width="1832" height="684" alt="ab" src="https://github.com/user-attachments/assets/b7db6227-fc0a-4b6c-b233-df8e566a2562" />
+
+
+The exported images can be organized into sequential hybridization-round folders.
+
+Example:
+
+```text
+RAMFISH_Project/
+├── Round_1/
+│   ├── DAPI.tif
+│   ├── geneA.tif
+│   └── geneB.tif
+├── Round_2/
+│   ├── DAPI.tif
+│   ├── geneC.tif
+│   └── geneD.tif
+└── Round_3/
+    ├── DAPI.tif
+    └── geneE.tif
 ```
 
 ---
 
-## 📂 Data Preparation
+# 2. Rough Aligner
 
-1. Load the raw image files (imaged at 20x lens at 2k or 4k resolution) from your microscope software (e.g., Olympus FLUOVIEW) into the **Imaris File Converter** and convert them to `.ims` format.
-2. Open the `.ims` file in **Imaris Viewer** and export the individual channels, including DAPI, in high-resolution (4000x4000 pixels) at 600 dpi in `.tiff` format.
+## `ramfish_rough_aligner.py`
 
-**Note:** Ensure the boundary lines of your image are not exported along with the image data. There is no need to orient the images at this stage, as this will be handled by the rough aligner module.
+The rough aligner provides interactive, browser-based manipulation before automated deformable registration.
 
----
+This stage is particularly useful when sequential rounds exhibit:
 
-## 🚀 Pipeline Workflow
+- Large translations
+- Rotation
+- Scaling differences
+- Tissue flipping
+- Significant initial geometric displacement
 
-<img width="2870" height="654" alt="fig1_2 - Copy" src="https://github.com/user-attachments/assets/fd670124-4698-46b1-b936-b0772d8c781e" />
+### Setup
 
+Organize normalized images into sequential folders:
 
-### 1. Normalization (`1_normalization`)
-To resolve intensity discrepancies across iterative multiplexed imaging cycles, this module uses a GPU-accelerated standardization protocol to equalize brightness and contrast. It converts multichannel inputs into a unified grayscale representation, utilizes a heavy Gaussian blur filter to estimate and subtract non-uniform illumination, and computes a dynamic intensity upper-bound to filter out hot-pixel anomalies.
+```text
+Round_1/
+Round_2/
+Round_3/
+...
+Round_N/
+```
 
-* **Setup:** Place high-resolution exports from Imaris Viewer into the `rawdata/` directory.
-* **Execution:** `python ramfish_normalization.py`
-* **Configuration (`config.json`):**
-  * `raw_dir` / `out_dir`: Input and destination folder paths.
-  * `output_prefix`: Custom text string added to output filenames (default: `NORM_`).
-  * `valid_extensions`: Target formats to scan (e.g., `.tif`, `.png`, `.jpg`).
-  * `target_intensity`: Rescaling maximum value (default: `60000.0`) to maximize signal dynamic range in 16-bit space.
-  * `blur_sigma`: Gaussian convolution filter standard deviation for background illumination modeling.
-  * `percentile`: Intensity cutoff percentile (99.0% - 99.9%) to establish true signal maximum while ignoring artifacts.
-* **Output:** Compiled in the `normalized_data/` directory.
+### Run
 
-### 2. Rough Aligner (`2_rough_aligner`)
-<img width="1282" height="898" alt="1" src="https://github.com/user-attachments/assets/7d405bd8-2ed1-49fd-8397-7275cd353abd" />
+```bash
+python ramfish_rough_aligner.py
+```
 
-Rigid SimpleITK-based B-Spline registration frameworks frequently fail when confronted with heavy geometric deformations or tissue flipping. This hybrid interactive application bridges visual micro-manipulation with high-resolution spatial matrices.
-
-* **Setup:** Organize normalized files into their respective sequence folders (`Round_1/`, `Round_2/`, ... `Round_N/`).
-* **Execution:** `python ramfish_rough_aligner.py`
-* **Usage:** A local web interface will launch in your browser. Select your `Round_1` baseline image as the absolute fixed anchor and corresponding moving reference images for downstream folders. Adjust UI tools (Opacity, Scale, Rotation, X/Y Translate, Flip) until structural features match. Click **"Apply Rough Alignment to Folder"** to batch-transform every other target gene channel in that round's folder. 
+A local web interface will launch in your browser.
+<img width="1282" height="898" alt="3" src="https://github.com/user-attachments/assets/1f201b76-6f05-4a60-8dcd-b04de4fe5db1" />
 
 
-* **Output:** Transformed files are updated directly inside their native sequence directory, prefixed as `ALIGNED_`.
+Select the **Round 1** dataset as the fixed reference and use the interactive controls to adjust:
 
-### 3. Fine Aligner (`3_fine_aligner`)
-<img width="1171" height="654" alt="2" src="https://github.com/user-attachments/assets/5d194703-db15-42fe-a04f-f6985a4e02a0" />
+- Scale
+- Rotation
+- Translation
+- Flip/orientation
 
-Ensures high-fidelity spatial registration by mapping all sequential datasets back to the absolute `Round_1` coordinate grid. It calculates a global affine matrix transformation followed by a non-rigid B-Spline deformable registration algorithm (via SimpleITK) to compensate for localized elastic tissue distortions (stretching, shrinkage).
+Apply the transformation to the selected folder using:
 
-* **Setup:** Migrate roughly aligned (`ALIGNED_`) entries into the active `Round_X/` folders. Ensure *only* these files occupy the workspace.
-* **Execution:** `python ramfish_fine_aligner.py`
-* **Usage:** In the browser console, specify multiplex constraints in "Total FISH Rounds". Designate your static anchor in "Round 1 (Global Fixed Reference)". Sequentially load your Structural Reference and Target Genes for subsequent rounds. Select **"Run Batch Alignment"**. 
+**Apply Rough Alignment to Folder**
 
-
-* **Output:** Compiled in the `aligned_outputs/` directory with standardized prefixes (e.g., `R2_aligned_...`).
-* **Note on 3D:** For 3D registration outside this pipeline, cell boundaries can be mapped in Imaris 10.2 via native Image Alignment toolkits.
-
-### 4. Spot Counter (`4_spot_counter`)
-Utilizes a parallelized Laplacian of Gaussian (LoG) blob detection algorithm with automatic scale selection to identify fluorescent mRNA transcript spots and localized signal clusters. The engine is optimized for robust, semi-quantitative spatial profiling.
-
-* **Setup:** Migrate registered, high-resolution outputs from the fine-alignment directory to `rawdata/`. Rename files directly to their respective target gene names (e.g., `ci.jpg`).
-* **Execution:** `python ramfish_spotcounter.py`
-* **Configuration (`config.json`):**
-  * `blob_min_sigma`: Minimum expected spot radius in pixels (default: `2`).
-  * `blob_max_sigma`: Maximum expected spot radius in pixels (default: `5`).
-  * `blob_num_sigma`: Number of intermediate size steps checked (default: `4`).
-  * `blob_threshold`: Peak-detection filter sensitivity (default: `0.30`).
-  * `intensity_cutoff`: Absolute brightness barrier to eliminate autofluorescence, scaled 0.0 to 1.0 (default: `0.25`).
-  * `synthetic_spot_radius`: Rendered dot radius in synthetic output images.
-* **Output Structure:**
-  * `data_sheets/`: Contains `individual_csvs/` (coordinates mapped per gene), `ERROR_LOG.csv`, `BATCH_SUMMARY_COUNTS.csv`, and the master `ramfish_master_spots.csv`.
-  * `spot_images/`: Diagnostic validation images with red circles around verified transcripts.
-  * `synthetic_spots/`: Binarized, zero-background synthetic dot images used for final merging.
-
-### 5. Merger (`5_merger`)
-<img width="1296" height="874" alt="3" src="https://github.com/user-attachments/assets/3f2292ab-9392-4c17-a170-095c52958ba5" />
-
-
-Integrates the discrete spatial coordinates of detected spots from all sequential rounds into a unified, high-dimensional multiplexed-FISH map, providing a global view of combinatorial gene expression across the tissue architecture.
-
-* **Execution:** Open `ramfish_merger.html` locally in your browser.
-* **Usage:** Load target channels from your `synthetic_spots/` directory. Ensure files follow the `gene_name.file_extension` format (e.g., `ptc.jpg`, `hh.jpg`). **Designate your structural template layer strictly as `DAPI.jpg`**. The tool supports up to 30 distinct multiplex channels simultaneously and allows for dynamic UI configurations (background noise floors, gamma curves, figure legends). 
-
-
-* **Output:** Generates and exports a publication-grade, multi-color composite spatial map matching native resolution.
-* **Web Portal:** An open-access web deployment of this module is actively available at [tirthadasbanerjee.com/assets/tools/ramfishmerger.html](https://tirthadasbanerjee.com/assets/tools/ramfishmerger.html).
+Aligned files are saved with the `ALIGNED_` prefix.
 
 ---
 
-## 📜 Citation
-If you use the RAMFISH Software Suite in your research, please cite the foundational methodology:
+# 3. Fine Aligner
 
-> **Rapid Amplified Multiplexed-FISH (RAM-FISH)**
-> Preprint available on bioRxiv: [[doi: 10.1101/2024.12.06.627193](https://doi.org/10.1101/2024.12.06.627193)](https://www.biorxiv.org/content/10.1101/2024.12.06.627193v4)
+## `ramfish_fine_aligner.py`
+
+The fine alignment stage performs high-fidelity registration of sequential datasets into the absolute **Round 1 coordinate space**.
+
+The workflow combines:
+
+1. Global affine registration
+2. Non-rigid B-Spline deformable registration
+
+This allows the pipeline to compensate for local tissue deformation that cannot be corrected reliably through rigid or affine transformations alone.
+
+### Setup
+
+Place roughly aligned files into their corresponding `Round_X/` directories.
+
+Example:
+
+```text
+Round_1/
+    ALIGNED_DAPI.tif
+    ALIGNED_geneA.tif
+
+Round_2/
+    ALIGNED_DAPI.tif
+    ALIGNED_geneB.tif
+```
+
+### Run
+
+```bash
+python ramfish_fine_aligner.py
+```
+<img width="1171" height="654" alt="4" src="https://github.com/user-attachments/assets/96bddb2b-345e-4d72-bc68-4f028ebfc53a" />
+
+
+Use the browser interface to:
+
+- Define the static reference/anchor
+- Select moving datasets
+- Specify multiplexing constraints
+- Configure registration parameters
+- Run batch alignment
+
+Processed datasets are written to:
+
+```text
+aligned_outputs/
+```
+
+---
+
+# 4. mRNA Spot Counter
+
+## `ramfish_spotcounter.py`
+
+The spot counter detects fluorescent mRNA transcripts and localized signal clusters using a parallelized **Laplacian of Gaussian (LoG)** blob-detection workflow.
+
+The pipeline supports automatic scale selection and configurable intensity filtering for semi-quantitative spatial profiling.
+
+### Setup
+
+Place registered images into:
+
+```text
+rawdata/
+```
+
+Rename target images using their gene/channel names.
+
+For example:
+
+```text
+rawdata/
+├── ci.jpg
+├── wg.jpg
+├── optix.jpg
+└── spalt.jpg
+```
+
+### Run
+
+```bash
+python ramfish_spotcounter.py
+```
+
+### Configuration
+
+Detection parameters can be adjusted through:
+
+```text
+config.json
+```
+
+Important parameters include:
+
+```json
+{
+    "blob_min_sigma": "...",
+    "blob_max_sigma": "...",
+    "intensity_cutoff": "..."
+}
+```
+
+These parameters can be tuned to control detection scale and suppress tissue autofluorescence or other background signals.
+
+### Outputs
+
+The spot counter generates:
+
+```text
+data_sheets/
+spot_images/
+synthetic_spots/
+```
+
+#### `data_sheets/`
+
+Contains individual and master CSV files containing detected spot coordinates and associated measurements.
+
+#### `spot_images/`
+
+Contains validation images showing detected spots for visual quality control.
+
+#### `synthetic_spots/`
+
+Contains binarized/synthetic representations of detected transcript locations for downstream multiplex merging.
+
+---
+
+# 5. Multiplexed Merger
+
+## `ramfish_merger.html`
+
+The merger combines spatial coordinates from individual transcript channels into a unified multiplexed-FISH representation.
+
+### Launch
+
+Open:
+
+```text
+ramfish_merger.html
+```
+
+directly in a web browser.
+
+The RAMFISH merger can also be accessed through:
+
+https://tirthadasbanerjee.com/assets/tools/ramfishmerger.html
+
+<img width="1296" height="874" alt="5" src="https://github.com/user-attachments/assets/0922ad39-2d02-40a8-be1f-1a3a5763d195" />
+
+
+### Input
+
+Load the synthetic spot maps generated by the spot counter.
+
+Use the naming convention:
+
+```text
+gene_name.jpg
+```
+
+The structural reference/template should be:
+
+```text
+DAPI.jpg
+```
+
+### Available controls
+
+The merger provides controls for:
+
+- Noise floor
+- Gamma
+- Channel visualization
+- Legend placement
+- Composite rendering
+
+The final output can be exported as a publication-ready multiplexed spatial expression map.
+
+---
+
+
+# 🔬 RAMFISH Workflow at a Glance
+
+| Stage | Tool | Purpose |
+|---|---|---|
+| 1 | `ramfish_processor.py` | Proprietary-file conversion, MIP, normalization |
+| 2 | `ramfish_rough_aligner.py` | Interactive coarse spatial alignment |
+| 3 | `ramfish_fine_aligner.py` | Affine + non-rigid B-Spline registration |
+| 4 | `ramfish_spotcounter.py` | mRNA spot detection and coordinate extraction |
+| 5 | `ramfish_merger.html` | Multiplexed spatial-map reconstruction |
+
+---
+
+# 📊 Output
+
+The final RAMFISH output is a high-dimensional spatial expression map in which transcript channels from multiple iterative hybridization rounds are registered into a common coordinate system.
+
+This enables visualization and analysis of multiplexed gene-expression patterns while retaining their spatial relationship to tissue architecture.
+
+---
+
+# 📜 Citation
+
+If you use the RAMFISH Software Suite in your research, please cite the foundational RAM-FISH methodology:
+
+**Rapid Amplified Multiplexed-FISH (RAM-FISH)**
+
+bioRxiv preprint:
+
+**DOI:** `10.1101/2024.12.06.627193`
+
+---
+
+# 🤝 Contributing
+
+Contributions, bug reports, feature requests, and improvements are welcome.
+
+When reporting an issue, please include:
+
+- Operating system
+- Python version
+- RAMFISH version/commit
+- GPU model and CUDA version, if applicable
+- Input file format
+- Relevant error message or traceback
+- A minimal description of the dataset and processing stage where the issue occurred
+
+email to: tirtha_banerjee@u.nus.edu (Tirtha Das Banerjee)
+
+---
+
+# ⚠️ Important Notes
+
+- Always keep an untouched copy of your raw microscopy data.
+- Work on normalized/processed copies rather than modifying irreplaceable raw data.
+- Proprietary microscopy formats may require compatible Bio-Formats/AICSImageIO support.
+- GPU acceleration requires a compatible NVIDIA GPU and CUDA environment.
+- Large microscopy datasets can require substantial RAM and temporary disk space.
+- Registration quality should be visually inspected before downstream spot quantification.
+
+---
+
+## 🧬 RAMFISH
+
+**Rapid Amplified Multiplexed-FISH Software Suite**
+
+A computational framework for converting iterative multiplexed microscopy rounds into unified spatial transcriptomic maps.
