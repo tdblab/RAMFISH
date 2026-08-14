@@ -148,6 +148,21 @@ def process_and_export(file_path, output_dir, target_fmt, apply_mip, norm_settin
         prefix = "NORM_" if norm_settings["do_norm"] else "RAW_"
         
         for c in range(num_channels):
+            # 1. ALWAYS export single slices (or single image if no z-stack)
+            for z in range(num_z):
+                plane_data = raw_volume[c][z]
+                z_label = f"_Z{z}" if num_z > 1 else ""
+                file_suffix = f"_C{c}{z_label}{target_fmt}"
+                
+                norm_plane = apply_ramfish_normalization(plane_data, **norm_settings)
+                final_img = format_and_resize(norm_plane, target_fmt, **res_settings)
+                
+                clean_name = "".join(ch for ch in file_path.stem if ch.isprintable()).strip()
+                out_name = output_dir / f"{prefix}{clean_name}{file_suffix}"
+                iio.imwrite(str(out_name), final_img)
+                exported_files.append(out_name.name)
+                
+            # 2. IN ADDITION, export MIP if requested and it is a z-stack
             if num_z > 1 and apply_mip:
                 plane_data = np.max(raw_volume[c], axis=0)
                 file_suffix = f"_C{c}_MIP{target_fmt}"
@@ -159,20 +174,6 @@ def process_and_export(file_path, output_dir, target_fmt, apply_mip, norm_settin
                 out_name = output_dir / f"{prefix}{clean_name}{file_suffix}"
                 iio.imwrite(str(out_name), final_img)
                 exported_files.append(out_name.name)
-                
-            else:
-                for z in range(num_z):
-                    plane_data = raw_volume[c][z]
-                    z_label = f"_Z{z}" if num_z > 1 else ""
-                    file_suffix = f"_C{c}{z_label}{target_fmt}"
-                    
-                    norm_plane = apply_ramfish_normalization(plane_data, **norm_settings)
-                    final_img = format_and_resize(norm_plane, target_fmt, **res_settings)
-                    
-                    clean_name = "".join(ch for ch in file_path.stem if ch.isprintable()).strip()
-                    out_name = output_dir / f"{prefix}{clean_name}{file_suffix}"
-                    iio.imwrite(str(out_name), final_img)
-                    exported_files.append(out_name.name)
                     
         return True, exported_files
         
@@ -211,7 +212,7 @@ with col1:
 with col2:
     st.subheader("2. Export Settings")
     target_format = st.selectbox("Output Format:", [".tif", ".jpg", ".png", ".bmp"])
-    apply_mip = st.checkbox("Max Intensity Projection (MIP) for Z-Stacks", value=True)
+    apply_mip = st.checkbox("Export Max Intensity Projection (MIP) along with Z-slices", value=True)
     
     res_mode = st.selectbox(
         "Target Resolution:",
