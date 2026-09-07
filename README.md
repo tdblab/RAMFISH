@@ -418,12 +418,6 @@ Open:
 ramfish_merger.html
 ```
 
-directly in a web browser.
-
-The RAMFISH merger can also be accessed through:
-
-https://tirthadasbanerjee.com/assets/tools/ramfishmerger.html
-
 <img width="1296" height="874" alt="5" src="https://github.com/user-attachments/assets/0922ad39-2d02-40a8-be1f-1a3a5763d195" />
 
 
