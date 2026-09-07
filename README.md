@@ -490,24 +490,6 @@ bioRxiv preprint: https://www.biorxiv.org/content/10.1101/2024.12.06.627193v4
 
 ---
 
-# 🤝 Contributing
-
-Contributions, bug reports, feature requests, and improvements are welcome.
-
-When reporting an issue, please include:
-
-- Operating system
-- Python version
-- RAMFISH version/commit
-- GPU model and CUDA version, if applicable
-- Input file format
-- Relevant error message or traceback
-- A minimal description of the dataset and processing stage where the issue occurred
-
-email to: tirtha_banerjee@u.nus.edu (Tirtha Das Banerjee)
-
----
-
 # ⚠️ Important Notes
 
 - Always keep an untouched copy of your raw microscopy data.
