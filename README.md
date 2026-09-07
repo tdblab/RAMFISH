@@ -476,17 +476,6 @@ The final RAMFISH output is a high-dimensional spatial expression map in which t
 
 This enables visualization and analysis of multiplexed gene-expression patterns while retaining their spatial relationship to tissue architecture.
 
----
-
-# 📜 Citation
-
-If you use the RAMFISH Software Suite in your research, please cite the foundational RAMFISH methodology:
-
-**Rapid Amplified Multiplexed FISH (RAMFISH)**
-
-bioRxiv preprint: https://www.biorxiv.org/content/10.1101/2024.12.06.627193v4
-
-**DOI:** `10.1101/2024.12.06.627193`
 
 ---
 
