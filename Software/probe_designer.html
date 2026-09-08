@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCR Probe Designer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 24px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0px auto;
+            background-color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label, .container h2 {
+            color: #4CAF50;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+
+        .probe-set {
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-top: 50px;
+        }
+
+        .highlight {
+            background-color: #d3d3d3;
+        }
+
+        .highlight-box {
+            background-color: #fff;
+            border: 2px solid #4CAF50;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>HCR Probe Designer </header>
+    <div class="container">
+        <h2>Input Gene Sequence and Design Probes</h2>
+        <label for="gene-name">Enter Gene Name:</label>
+        <input type="text" id="gene-name" placeholder="Gene Name">
+
+        <label for="gene-sequence">Enter Gene Sequence (minimum 102 bp):</label>
+        <textarea id="gene-sequence" placeholder="Enter sequence here..."></textarea>
+
+        <label for="amplifier">Select Amplifier:</label>
+        <select id="amplifier">
+            <option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option>
+            <option value="B4">B4</option><option value="B5">B5</option><option value="B6">B6</option>
+            <option value="B7">B7</option><option value="B8">B8</option><option value="B9">B9</option>
+            <option value="B10">B10</option><option value="B11">B11</option><option value="B12">B12</option>
+            <option value="B13">B13</option><option value="B14">B14</option><option value="B15">B15</option>
+            <option value="B16">B16</option><option value="B17">B17</option><option value="B18">B18</option>
+            <option value="B19">B19</option><option value="B20">B20</option>
+        </select>
+
+        <label for="gc-content">Select GC Content Threshold (%):</label>
+        <select id="gc-content">
+            <option value="30">30%</option>
+            <option value="35">35%</option>
+            <option value="40">40%</option>
+            <option value="45">45%</option>
+            <option value="50">50%</option>
+            <option value="55">55%</option>
+            <option value="60">60%</option>
+            <option value="65">65%</option>
+            <option value="70">70%</option>
+        </select>
+
+        <label for="probe-gap">Enter Gap between Probe Sets (in base pairs):</label>
+        <input type="number" id="probe-gap" value="30">
+
+        <button onclick="designProbes()">Design Probes</button>
+        <button onclick="downloadExcel()">Download Excel File</button>
+
+
+
+
+    </div>
+
+    <div id="results" class="results"></div>
+
+    <div class="footer">
+        <p>Developed by <a href=""></a></p>
+    </div>
+
+    <script>
+        function reverseComplement(seq) {
+            const comp = { 'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C' };
+            return seq.split('').reverse().map(base => comp[base] || base).join('');
+        }
+
+        function calculateGCContent(seq) {
+            return (seq.match(/[GC]/g) || []).length / seq.length * 100;
+        }
+
+        const amplifiers = {
+            B1: ["GAGGAGGGCAGCAAACGGAA", "TAGAAGAGTCTTCCTTTACG"],
+            B2: ["CCTCGTAAATCCTCATCAAA", "AAATCATCCAGTAAACCGCC"],
+            B3: ["GTCCCTGCCTCTATATCTTT", "TTCCACTCAACTTTAACCCG"],
+            B4: ["CCTCAACCTACCTCCAACAA", "ATTCTCACCATATTCGCTTC"],
+            B5: ["CTCACTCCCAATCTCTATAA", "AACTACCCTACAAATCCAAT"],
+            B6: ["CACCCTCACTACCTCACCAA", "AACTCACCTCCATCCACCTC"],
+            B7: ["CCTACCTCCAATCCCTACAT", "AACCTCACTACATCCTCACC"],
+            B8: ["CCTTGATTATCTCGTCTCTT", "TTCATCACTCGCACTCTACC"],
+            B9: ["CCACTCTCAGCACACTCCAA", "ATCAACCCTACTACAAGCTC"],
+            B10: ["CCTCTACCTACTCGACTAAA", "AACCCTAGCCGTAACTTCAC"],
+            B11: ["ACTCCTACGTCGACCACAAA", "TACTCATCCTGCATGTTCCC"],
+            B12: ["GCTCTCATGCCTCTCGTATT", "TTCTACCGTCACAAGTAAAC"],
+            B13: ["CCTGCTTTATGCTCAACAAT", "AATACAACCAGAAATGCGGC"],
+            B14: ["GAGCGACCCTATATTTCTAA", "AAGCACAGAAGTTATACCGG"],
+            B15: ["CCACAAGGTATCTCGAACTT", "TTACTCTCCAAATTGGCTAC"],
+            B16: ["GACGAGCGCACCAATCGGAA", "ATCAAGTGTCATGGATTAGG"],
+            B17: ["GTGGACGCATGCTAATCGAT", "AAGATGAGTGTTCGTTATCG"],
+            B18: ["GGACGATAAACCTGATCTAA", "AAATCTTCCTGTATAGGCTC"],
+            B19: ["GACCTACGGACTTAATCTTT", "TTGCTGTCATCTTAAAGCGG"],
+            B20: ["TCAGTACCTTGCTCGTTCAA", "AATAACATCTATTTGTCTAC"]
+        };
+
+        let exportData = [];
+
+        function designProbes() {
+            let geneName = document.getElementById("gene-name").value.trim();
+            let sequence = document.getElementById("gene-sequence").value.toUpperCase().replace(/[^ATCG]/g, "");
+            let amplifier = document.getElementById("amplifier").value;
+            let gcThreshold = parseInt(document.getElementById("gc-content").value);
+            let gap = parseInt(document.getElementById("probe-gap").value);
+
+            if (sequence.length < 102) return alert("Sequence must be at least 102 base pairs long.");
+
+            let output = "<h3>Designed Probes</h3>", idx = 50, set = 1;
+            let highlightedSequence = sequence.split('');
+            exportData = [];
+
+            while (idx + 52 <= sequence.length) {
+                let p1 = sequence.slice(idx, idx + 25);
+                let p2 = sequence.slice(idx + 27, idx + 52);
+                let rc1 = reverseComplement(p1);
+                let rc2 = reverseComplement(p2);
+
+                if (calculateGCContent(rc1) < gcThreshold || calculateGCContent(rc2) < gcThreshold) {
+                    idx++;
+                    continue;
+                }
+
+                for (let i = idx; i < idx + 25; i++) {
+    highlightedSequence[i] = `<span class="highlight">${highlightedSequence[i]}</span>`;
+}
+for (let i = idx + 27; i < idx + 52; i++) {
+    highlightedSequence[i] = `<span class="highlight">${highlightedSequence[i]}</span>`;
+}
+
+                let name1 = `${geneName}_${amplifier}_P1_${set}`;
+                let name2 = `${geneName}_${amplifier}_P2_${set}`;
+                let seq1 = amplifiers[amplifier][0] + rc1;
+                let seq2 = rc2 + amplifiers[amplifier][1];
+
+                output += `<div class='probe-set'><strong>Probe Set ${set}:</strong><br>Probe 1: ${name1}: ${seq1}<br>Probe 2: ${name2}: ${seq2}</div>`;
+
+                exportData.push([name1, seq1, name2, seq2]);
+                set++;
+                idx += 50 + gap;
+            }
+
+            document.getElementById("results").innerHTML = `
+                <h3>Sequence with Highlighted Probe Regions:</h3>
+                <div class="highlight-box">${highlightedSequence.join('')}</div>
+                ${output}
+            `;
+        }
+
+        function downloadExcel() {
+            let ws = XLSX.utils.aoa_to_sheet([["Probe 1 Name", "Probe 1 Sequence", "Probe 2 Name", "Probe 2 Sequence"], ...exportData]);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Probes");
+            XLSX.writeFile(wb, "hcr_probes.xlsx");
+        }
+    </script>
+</body>
+</html>
+
