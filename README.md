@@ -418,12 +418,6 @@ Open:
 ramfish_merger.html
 ```
 
-directly in a web browser.
-
-The RAMFISH merger can also be accessed through:
-
-https://tirthadasbanerjee.com/assets/tools/ramfishmerger.html
-
 <img width="1296" height="874" alt="5" src="https://github.com/user-attachments/assets/0922ad39-2d02-40a8-be1f-1a3a5763d195" />
 
 
@@ -476,35 +470,6 @@ The final RAMFISH output is a high-dimensional spatial expression map in which t
 
 This enables visualization and analysis of multiplexed gene-expression patterns while retaining their spatial relationship to tissue architecture.
 
----
-
-# 📜 Citation
-
-If you use the RAMFISH Software Suite in your research, please cite the foundational RAMFISH methodology:
-
-**Rapid Amplified Multiplexed FISH (RAMFISH)**
-
-bioRxiv preprint: https://www.biorxiv.org/content/10.1101/2024.12.06.627193v4
-
-**DOI:** `10.1101/2024.12.06.627193`
-
----
-
-# 🤝 Contributing
-
-Contributions, bug reports, feature requests, and improvements are welcome.
-
-When reporting an issue, please include:
-
-- Operating system
-- Python version
-- RAMFISH version/commit
-- GPU model and CUDA version, if applicable
-- Input file format
-- Relevant error message or traceback
-- A minimal description of the dataset and processing stage where the issue occurred
-
-email to: tirtha_banerjee@u.nus.edu (Tirtha Das Banerjee)
 
 ---
 
