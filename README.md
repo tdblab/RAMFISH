@@ -8,6 +8,9 @@ The suite processes high-resolution microscopy channels through a user-friendly 
 
 By standardizing coordinate space across iterative hybridization rounds, RAMFISH enables researchers to reconstruct publication-grade, high-dimensional composite spatial-expression maps across intact tissue architectures.
 
+A newer fully integrated app with all five tools called RAMFISH_Studio can be found at: https://github.com/tdblab/RAMFISH_Studio.
+An online test version can be accessed at: https://ramfishstudio.streamlit.app/
+Note that the Streamlit app is just for quick tests of small files and is constrained by online resources.
 ---
 
 ## 🌱 Beginner-Friendly Installation Guide
