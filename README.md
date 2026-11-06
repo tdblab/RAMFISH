@@ -3,7 +3,7 @@
 https://github.com/user-attachments/assets/3f6d8df5-255d-470b-b3cb-9267a024e134
 
 
-<img width="512" height="403" alt="ramfish-logo" src="https://github.com/user-attachments/assets/d0b51d1c-b640-4795-a3f5-75f36986831b" />
+
 
 
 The **RAMFISH Software Suite** is an open-source computational pipeline engineered to handle multiplexed spatial-domain datasets generated from the **RAMFISH workflow**.
@@ -18,6 +18,7 @@ An online test version can be accessed at: https://ramfishstudio.streamlit.app/
 Note that the Streamlit app is just for quick tests of small files and is constrained by online resources.
 
 ---
+<img width="512" height="403" alt="ramfish-logo" src="https://github.com/user-attachments/assets/d0b51d1c-b640-4795-a3f5-75f36986831b" />
 
 ## 🌱 Beginner-Friendly Installation Guide
 
