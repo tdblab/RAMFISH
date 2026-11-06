@@ -1,6 +1,7 @@
 # 🔬 RAMFISH Software Suite
 
-<img width="2816" height="959" alt="1" src="https://github.com/user-attachments/assets/05cbdd9a-5e4f-4d34-b316-4d39fa01ff0b" />
+<img width="512" height="403" alt="ramfish-logo" src="https://github.com/user-attachments/assets/d0b51d1c-b640-4795-a3f5-75f36986831b" />
+
 
 The **RAMFISH Software Suite** is an open-source computational pipeline engineered to handle multiplexed spatial-domain datasets generated from the **RAMFISH workflow**.
 
