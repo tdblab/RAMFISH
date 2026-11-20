@@ -1,0 +1,5 @@
+"tissue","comparison","n_genes","spearman_rho","spearman_p","pearson_r_log10","pearson_p"
+"Forewing","RAMFISH vs Bulk RNA-seq",29,0.285,0.134,0.239,0.211
+"Hindwing","RAMFISH vs Bulk RNA-seq",23,0.245,0.259,0.231,0.288
+"Hindwing","RAMFISH vs scRNA-seq",23,0.483,0.0207,0.394,0.0626
+"Hindwing","Bulk RNA-seq vs scRNA-seq",23,0.562,0.00599,0.481,0.0203
