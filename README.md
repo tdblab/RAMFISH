@@ -1,6 +1,10 @@
 # 🔬 RAMFISH Software Suite
 
-<img width="2816" height="959" alt="1" src="https://github.com/user-attachments/assets/05cbdd9a-5e4f-4d34-b316-4d39fa01ff0b" />
+https://github.com/user-attachments/assets/3f6d8df5-255d-470b-b3cb-9267a024e134
+
+
+
+
 
 The **RAMFISH Software Suite** is an open-source computational pipeline engineered to handle multiplexed spatial-domain datasets generated from the **RAMFISH workflow**.
 
@@ -8,7 +12,13 @@ The suite processes high-resolution microscopy channels through a user-friendly 
 
 By standardizing coordinate space across iterative hybridization rounds, RAMFISH enables researchers to reconstruct publication-grade, high-dimensional composite spatial-expression maps across intact tissue architectures.
 
+A newer fully integrated app with all five tools called RAMFISH_Studio can be found at: https://github.com/tdblab/RAMFISH_Studio.
+
+An online test version can be accessed at: https://ramfishstudio.streamlit.app/
+Note that the Streamlit app is just for quick tests of small files and is constrained by online resources.
+
 ---
+<img width="512" height="403" alt="ramfish-logo" src="https://github.com/user-attachments/assets/d0b51d1c-b640-4795-a3f5-75f36986831b" />
 
 ## 🌱 Beginner-Friendly Installation Guide
 
