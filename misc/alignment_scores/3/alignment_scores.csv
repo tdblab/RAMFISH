@@ -1,0 +1,4 @@
+metric,before_fine_alignment (reference vs raw),after_fine_alignment (reference vs aligned)
+Pearson r,0.047,0.304
+SSIM,0.402,0.45
+NMI,0.007,0.028
