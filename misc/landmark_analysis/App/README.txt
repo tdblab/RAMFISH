@@ -8,6 +8,9 @@ RAMFISH landmark tools
    - Enter the pixel size (µm/px). Click the landmarks on Round 1, then the same landmarks on every other image.
    - Results, p-values (Wilcoxon signed-rank, paired) and plots appear at the bottom; download them as SVG/PNG/Excel.
    - "Save landmarks (Excel)" keeps your points; "Open landmarks (Excel/CSV)" reopens them (try the two example files).
+   - "Make figure" (under Results) builds a figure from the reference image and the images of one aligned round:
+     the images with the landmarks (reference positions green, aligned positions magenta), the distance plot and
+     close-ups of every landmark. Download it as SVG (text stays editable, Arial) or PNG.
 
 3. Same analysis from the command line (Python 3 with numpy, pandas, scipy, matplotlib, openpyxl):
      python ramfish_landmark_error.py example_landmarks_wing1.xlsx --out results_wing1

@@ -161,6 +161,14 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-r
           <button id="dlRoundSvg">Download plot (SVG)</button>
           <button id="dlRoundPng">Download plot (PNG, 300 dpi)</button>
         </div>
+        <h2 style="margin-top:18px">Figure: images, landmarks, distances and close-ups</h2>
+        <p class="note">Uses the current specimen: the reference image and the images of one aligned round (the round of the image you have open, otherwise the first round). Keep those images loaded. Reference positions are green, aligned positions magenta.</p>
+        <div class="btns">
+          <button id="mkFig" class="primary">Make figure</button>
+          <button id="dlFigSvg">Download figure (SVG)</button>
+          <button id="dlFigPng">Download figure (PNG)</button>
+        </div>
+        <div class="plotwrap" id="figWrap" style="margin-top:8px"></div>
       </div>
       <div style="min-width:0">
         <div style="overflow-x:auto"><table id="sumTable"></table></div>
@@ -1791,12 +1799,12 @@ function plotSVG(groups, stages, u){
   if(!groups.length||!stages.length) return `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="120"><text x="20" y="60" font-family="Arial" font-size="16" fill="#666">No offsets yet</text></svg>`;
   const logScale=$("#logScale").checked, center=$("#centerStat").value;
   const vals=groups.flatMap(g=>stages.flatMap(st=>[...g.stages[st].values()]));
-  const sep=56, gw=Math.max(170, sep*stages.length+70), L=115, T=90, H=430, nLeg=stages.length+1, B=90+30*nLeg, W=Math.max(L+gw*groups.length+30, 460);
+  const sep=66, gw=Math.max(200, sep*stages.length+80), L=150, T=100, H=460, nLeg=stages.length+1, B=120+38*nLeg, W=Math.max(L+gw*groups.length+30, 520);
   const A=yAxis(vals, logScale, T, H), y=A.y;
   let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${T+H+B}" viewBox="0 0 ${W} ${T+H+B}" font-family="Arial, Helvetica, sans-serif"><rect width="100%" height="100%" fill="#fff"/>`;
-  for(const v of A.ticks){ s+=`<line x1="${L}" x2="${W-20}" y1="${y(v)}" y2="${y(v)}" stroke="#e6e6e6"/><text x="${L-12}" y="${y(v)+7}" font-size="20" text-anchor="end" fill="#222">${A.label(v)}</text>`; }
+  for(const v of A.ticks){ s+=`<line x1="${L}" x2="${W-20}" y1="${y(v)}" y2="${y(v)}" stroke="#e6e6e6"/><text x="${L-12}" y="${y(v)+9}" font-size="26" text-anchor="end" fill="#222">${A.label(v)}</text>`; }
   s+=`<line x1="${L}" x2="${L}" y1="${T-10}" y2="${T+H}" stroke="#222" stroke-width="1.5"/><line x1="${L}" x2="${W-20}" y1="${T+H}" y2="${T+H}" stroke="#222" stroke-width="1.5"/>`;
-  s+=`<text transform="translate(30 ${T+H/2}) rotate(-90)" font-size="22" text-anchor="middle" fill="#222">Distance from Round 1 position (${u})</text>`;
+  s+=`<text transform="translate(36 ${T+H/2}) rotate(-90)" font-size="28" text-anchor="middle" fill="#222">Distance from Round 1 position (${u})</text>`;
   groups.forEach((g,i)=>{
     const x0=L+gw*i+gw/2, xs={}; stages.forEach((st,j)=>xs[st]=x0+(j-(stages.length-1)/2)*sep);
     if(g.all && i>0) s+=`<line x1="${L+gw*i}" x2="${L+gw*i}" y1="${T-10}" y2="${T+H}" stroke="#bbb" stroke-dasharray="5,4"/>`;
@@ -1805,46 +1813,46 @@ function plotSVG(groups, stages, u){
       if(a!=null&&b!=null) s+=`<line x1="${xs[stages[j]]}" y1="${y(a)}" x2="${xs[stages[j+1]]}" y2="${y(b)}" stroke="#c9cfd6" stroke-width="1.2"/>`; } });
     stages.forEach(st=>{
       const v=[...g.stages[st].values()]; if(!v.length) return;
-      v.forEach((d,k)=>{ const jit=((k*37)%11-5)*1.4; s+=`<circle cx="${xs[st]+jit}" cy="${y(d)}" r="6.5" fill="${COL[st]}" stroke="#fff" stroke-width="1.2"/>`; });
+      v.forEach((d,k)=>{ const jit=((k*37)%11-5)*1.4; s+=`<circle cx="${xs[st]+jit}" cy="${y(d)}" r="8" fill="${COL[st]}" stroke="#fff" stroke-width="1.2"/>`; });
       const c=center==="mean"?mean(v):median(v); s+=`<line x1="${xs[st]-20}" x2="${xs[st]+20}" y1="${y(c)}" y2="${y(c)}" stroke="#111" stroke-width="3.5"/>`;
     });
     for(let j=0;j+1<stages.length;j++){
       const a=stages[j], b=stages[j+1], t=pairedTest(g,a,b); if(!t) continue;
       const top=Math.min(...[...g.stages[a].values(), ...g.stages[b].values()].map(y)) - 22, yb=Math.max(T-40, top);
       const x1=xs[a]+3, x2=xs[b]-3;
-      s+=`<path d="M${x1} ${yb+7} V${yb} H${x2} V${yb+7}" fill="none" stroke="#222" stroke-width="1.6"/><text x="${(x1+x2)/2}" y="${yb-6}" font-size="15" text-anchor="middle" fill="#222">${pText(t.p)}</text>`;
+      s+=`<path d="M${x1} ${yb+7} V${yb} H${x2} V${yb+7}" fill="none" stroke="#222" stroke-width="1.6"/><text x="${(x1+x2)/2}" y="${yb-6}" font-size="20" text-anchor="middle" fill="#222">${pText(t.p)}</text>`;
     }
-    s+=`<text x="${x0}" y="${T+H+34}" font-size="21" text-anchor="middle" fill="#222"${g.all?' font-weight="bold"':""}>${esc(g.name)}</text>`;
+    s+=`<text x="${x0}" y="${T+H+42}" font-size="26" text-anchor="middle" fill="#222"${g.all?' font-weight="bold"':""}>${esc(g.name)}</text>`;
   });
-  let ly=T+H+82; stages.forEach(st=>{ s+=`<circle cx="${L+15}" cy="${ly}" r="7" fill="${COL[st]}"/><text x="${L+38}" y="${ly+7}" font-size="19" fill="#222">${STAGES[st]}</text>`; ly+=30; });
-  s+=`<line x1="${L}" x2="${L+30}" y1="${ly}" y2="${ly}" stroke="#111" stroke-width="3.5"/><text x="${L+38}" y="${ly+7}" font-size="19" fill="#222">${center==="mean"?"Mean":"Median"}</text>`;
-  s+=`<text x="${W-20}" y="${T+H+B-14}" font-size="14" text-anchor="end" fill="#666">Wilcoxon signed-rank test, paired, two-sided</text></svg>`;
+  let ly=T+H+100; stages.forEach(st=>{ s+=`<circle cx="${L+15}" cy="${ly}" r="9" fill="${COL[st]}"/><text x="${L+40}" y="${ly+9}" font-size="24" fill="#222">${STAGES[st]}</text>`; ly+=38; });
+  s+=`<line x1="${L}" x2="${L+30}" y1="${ly}" y2="${ly}" stroke="#111" stroke-width="3.5"/><text x="${L+40}" y="${ly+9}" font-size="24" fill="#222">${center==="mean"?"Mean":"Median"}</text>`;
+  s+=`<text x="${W-20}" y="${T+H+B-14}" font-size="18" text-anchor="end" fill="#666">Wilcoxon signed-rank test, paired, two-sided</text></svg>`;
   return s;
 }
 function roundSVG(rows, stages, u){
   const rounds=[...new Set(rows.map(r=>r.round))].sort((a,b)=>a-b), lms=[...new Set(rows.map(r=>r.landmark))];
   if(!rows.length||!rounds.length) return `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="120"><text x="20" y="60" font-family="Arial" font-size="16" fill="#666">No offsets yet for ${esc(spec().name)}</text></svg>`;
   const val=r=>u==="µm"?r.distance_um:r.distance_px, logScale=$("#logScale").checked;
-  const L=115, T=30, H=400, cw=Math.max(80, 520/Math.max(rounds.length,1)), W=L+cw*rounds.length+40, rowsLeg=Math.max(lms.length, stages.length), B=110+30*rowsLeg;
+  const L=150, T=30, H=440, cw=Math.max(90, 560/Math.max(rounds.length,1)), W=Math.max(L+cw*rounds.length+40, 700), rowsLeg=Math.max(lms.length, stages.length), B=130+38*rowsLeg;
   const A=yAxis(rows.filter(r=>stages.includes(r.stage)).map(val), logScale, T, H), y=A.y, xr=i=>L+cw*(i+0.5);
   const dash={raw:"2,6", rough:"9,6", fine:""}, op={raw:0.5, rough:0.7, fine:1};
   let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${T+H+B}" viewBox="0 0 ${W} ${T+H+B}" font-family="Arial, Helvetica, sans-serif"><rect width="100%" height="100%" fill="#fff"/>`;
-  for(const v of A.ticks){ s+=`<line x1="${L}" x2="${W-20}" y1="${y(v)}" y2="${y(v)}" stroke="#e6e6e6"/><text x="${L-12}" y="${y(v)+7}" font-size="20" text-anchor="end" fill="#222">${A.label(v)}</text>`; }
+  for(const v of A.ticks){ s+=`<line x1="${L}" x2="${W-20}" y1="${y(v)}" y2="${y(v)}" stroke="#e6e6e6"/><text x="${L-12}" y="${y(v)+9}" font-size="26" text-anchor="end" fill="#222">${A.label(v)}</text>`; }
   s+=`<line x1="${L}" x2="${L}" y1="${T}" y2="${T+H}" stroke="#222" stroke-width="1.5"/><line x1="${L}" x2="${W-20}" y1="${T+H}" y2="${T+H}" stroke="#222" stroke-width="1.5"/>`;
-  s+=`<text transform="translate(30 ${T+H/2}) rotate(-90)" font-size="22" text-anchor="middle" fill="#222">Distance from Round 1 position (${u})</text>`;
-  rounds.forEach((r,i)=>{ s+=`<text x="${xr(i)}" y="${T+H+30}" font-size="20" text-anchor="middle" fill="#222">${r}</text>`; });
-  s+=`<text x="${L+cw*rounds.length/2}" y="${T+H+62}" font-size="22" text-anchor="middle" fill="#222">Round</text>`;
+  s+=`<text transform="translate(36 ${T+H/2}) rotate(-90)" font-size="28" text-anchor="middle" fill="#222">Distance from Round 1 position (${u})</text>`;
+  rounds.forEach((r,i)=>{ s+=`<text x="${xr(i)}" y="${T+H+36}" font-size="26" text-anchor="middle" fill="#222">${r}</text>`; });
+  s+=`<text x="${L+cw*rounds.length/2}" y="${T+H+74}" font-size="28" text-anchor="middle" fill="#222">Round</text>`;
   lms.forEach((lm,li)=>{ const c=LMCOL[li%LMCOL.length];
     stages.forEach(st=>{
       const pts=rounds.map((r,i)=>{ const q=rows.find(x=>x.landmark===lm&&x.round===r&&x.stage===st); return q?[xr(i),y(val(q))]:null; }).filter(Boolean);
       if(pts.length>1) s+=`<polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="${c}" stroke-width="2.6" stroke-opacity="${op[st]}" ${dash[st]?`stroke-dasharray="${dash[st]}"`:""}/>`;
-      pts.forEach(p=>{ s+=`<circle cx="${p[0]}" cy="${p[1]}" r="6.5" fill="${st==="fine"?c:"#fff"}" stroke="${c}" stroke-width="2" stroke-opacity="${op[st]}"/>`; });
+      pts.forEach(p=>{ s+=`<circle cx="${p[0]}" cy="${p[1]}" r="8" fill="${st==="fine"?c:"#fff"}" stroke="${c}" stroke-width="2" stroke-opacity="${op[st]}"/>`; });
     });
   });
-  let ly=T+H+100;
-  lms.forEach((lm,li)=>{ s+=`<line x1="${L}" x2="${L+30}" y1="${ly+li*30}" y2="${ly+li*30}" stroke="${LMCOL[li%LMCOL.length]}" stroke-width="3"/><circle cx="${L+15}" cy="${ly+li*30}" r="6" fill="${LMCOL[li%LMCOL.length]}"/><text x="${L+40}" y="${ly+li*30+7}" font-size="19" fill="#222">${esc(lm)}</text>`; });
-  const x2=L+Math.max(180, (W-L)/2);
-  stages.forEach((st,si)=>{ s+=`<line x1="${x2}" x2="${x2+36}" y1="${ly+si*30}" y2="${ly+si*30}" stroke="#444" stroke-width="2.6" ${dash[st]?`stroke-dasharray="${dash[st]}"`:""}/><text x="${x2+46}" y="${ly+si*30+7}" font-size="19" fill="#222">${STAGES[st]}</text>`; });
+  let ly=T+H+115;
+  lms.forEach((lm,li)=>{ s+=`<line x1="${L}" x2="${L+30}" y1="${ly+li*38}" y2="${ly+li*38}" stroke="${LMCOL[li%LMCOL.length]}" stroke-width="3"/><circle cx="${L+15}" cy="${ly+li*38}" r="7" fill="${LMCOL[li%LMCOL.length]}"/><text x="${L+40}" y="${ly+li*38+9}" font-size="24" fill="#222">${esc(lm)}</text>`; });
+  const x2=L+Math.max(200, (W-L)/2);
+  stages.forEach((st,si)=>{ s+=`<line x1="${x2}" x2="${x2+36}" y1="${ly+si*38}" y2="${ly+si*38}" stroke="#444" stroke-width="2.6" ${dash[st]?`stroke-dasharray="${dash[st]}"`:""}/><text x="${x2+46}" y="${ly+si*38+9}" font-size="24" fill="#222">${STAGES[st]}</text>`; });
   return s+`</svg>`;
 }
 function niceStep(x){ const p=10**Math.floor(Math.log10(x||1)), m=x/p; return (m<=1?1:m<=2?2:m<=5?5:10)*p; }
@@ -1954,6 +1962,94 @@ $("#exportView").onclick=()=>{
   const base=e.fileName.replace(/\.[^.]+$/,"");
   c.toBlob(b=>download(`${spec().name}_${base}_landmarks.png`,b),"image/png");
 };
+
+
+// ---------- figure: images with landmarks + distance plot + close-ups (SVG, Arial, text stays editable) ----------
+const FIG_REF="#00ff00", FIG_ALN="#ff00ff", FIG_LBL="#ffff00";
+const FIG_TITLE={raw:"before alignment", rough:"after rough alignment", fine:"after fine alignment"};
+function figureData(){
+  const sp=spec(), ref=refImage(sp);
+  if(!ref||!pixels.has(ref.id)) return {err:"Load the reference (Round 1) image of this specimen first."};
+  const ok=i=>i.role!=="ref"&&pixels.has(i.id)&&Object.keys(i.points).length;
+  const rounds=[...new Set(sp.images.filter(ok).map(i=>i.round))].sort((a,b)=>a-b);
+  if(!rounds.length) return {err:"Place the landmarks on at least one aligned image, and keep that image loaded."};
+  const e0=curImg&&img(curImg), round=e0&&e0.role!=="ref"&&rounds.includes(e0.round)?e0.round:rounds[0];
+  const others=["raw","rough","fine"].map(st=>sp.images.find(i=>i.role===st&&i.round===round&&ok(i))).filter(Boolean);
+  const lms=lmNumbers(sp).filter(n=>others.every(o=>o.points[n]));
+  if(!lms.length) return {err:"No landmark is placed on every image of this round."};
+  return {sp, ref, others, lms, round};
+}
+function figImageURL(e, x0, y0, w, h, outW, type){
+  const d=buildDisplay(e.id), c=document.createElement("canvas"), k=outW/w;
+  c.width=Math.round(outW); c.height=Math.round(h*k);
+  const g=c.getContext("2d"); g.fillStyle="#000"; g.fillRect(0,0,c.width,c.height);
+  g.imageSmoothingEnabled=true; g.drawImage(d.canvas, x0, y0, w, h, 0, 0, c.width, c.height);
+  return type==="png" ? c.toDataURL("image/png") : c.toDataURL("image/jpeg", 0.92);
+}
+function figTitle(e, round){ return e.role==="ref" ? ["Round 1","(reference)"] : [`Round ${round}`, FIG_TITLE[e.role]]; }
+function buildFigure(){
+  const F=figureData(); if(F.err) return {err:F.err};
+  const {sp, ref, others, lms, round}=F, ims=[ref, ...others], nI=ims.length, ps=sp.pixelSize, u=ps?"µm":"px";
+  const IW=560, IH=Math.round(IW*ref.h/ref.w), GAP=24, X0=40, TOP=120;
+  const PX=X0+nI*(IW+GAP)+30, PW=600, W=PX+PW+30;
+  const letters="ABCDEFGHIJ"; let li=0;
+  const t=(x,y,str,o="")=>`<text x="${x}" y="${y}" ${o}>${esc(str)}</text>`;
+  const lab=(x,y,str)=>`<text x="${x}" y="${y}" font-size="30" font-weight="bold" fill="${FIG_LBL}" stroke="#000" stroke-width="4" paint-order="stroke">${esc(str)}</text>`;
+  let s="";
+  // panels A..: the images
+  ims.forEach((e,i)=>{
+    const x=X0+i*(IW+GAP), k=IW/e.w, [t1,t2]=figTitle(e, round);
+    s+=t(x, TOP-62, `${letters[li++]} ${t1}`, 'font-size="32" font-weight="bold"')+t(x, TOP-22, t2, 'font-size="32" font-weight="bold"');
+    s+=`<image x="${x}" y="${TOP}" width="${IW}" height="${Math.round(e.h*k)}" preserveAspectRatio="none" href="${figImageURL(e,0,0,e.w,e.h,IW*2)}"/>`;
+    for(const n of lms){
+      const p=e.points[n], r=ref.points[n], px=x+p[0]*k, py=TOP+p[1]*k;
+      if(e.role!=="ref"){ const rx=x+r[0]*k, ry=TOP+r[1]*k;
+        s+=`<line x1="${rx}" y1="${ry}" x2="${px}" y2="${py}" stroke="${FIG_REF}" stroke-width="3"/><circle cx="${rx}" cy="${ry}" r="13" fill="none" stroke="${FIG_REF}" stroke-width="5"/>`; }
+      s+=`<circle cx="${px}" cy="${py}" r="13" fill="none" stroke="${e.role==="ref"?FIG_REF:FIG_ALN}" stroke-width="5"/>`+lab(px+18, py-14, lmLabel(n,sp));
+    }
+  });
+  // distance plot
+  const st=others.map(o=>o.role), D=lms.map(n=>others.map(o=>{const d=Math.hypot(o.points[n][0]-ref.points[n][0],o.points[n][1]-ref.points[n][1]); return ps?d*ps:d;}));
+  const pl=PX+140, pr=PX+PW-90, pt=TOP+30, pb=TOP+IH-120, vmax=Math.max(...D.flat(),1e-9), step=niceStep(vmax/5), ymax=Math.ceil(vmax*1.1/step)*step;
+  const yy=v=>pb-(v/ymax)*(pb-pt), xs=st.map((_,j)=>st.length===1?(pl+pr)/2:pl+40+j*(pr-pl-80)/(st.length-1));
+  s+=t(PX, TOP-22, `${letters[li++]} Landmark distance`, 'font-size="32" font-weight="bold"');
+  for(let v=0; v<=ymax+1e-9; v+=step) s+=`<line x1="${pl}" x2="${pr}" y1="${yy(v)}" y2="${yy(v)}" stroke="#e6e6e6"/>`+t(pl-12, yy(v)+9, +v.toFixed(2)+"", 'font-size="26" text-anchor="end"');
+  s+=`<line x1="${pl}" x2="${pl}" y1="${pt-10}" y2="${pb}" stroke="#222" stroke-width="1.5"/><line x1="${pl}" x2="${pr}" y1="${pb}" y2="${pb}" stroke="#222" stroke-width="1.5"/>`;
+  s+=`<text transform="translate(${PX+40} ${(pt+pb)/2}) rotate(-90)" font-size="28" text-anchor="middle">Distance from reference position (${u})</text>`;
+  D.forEach(v=>{ for(let j=0;j+1<v.length;j++) s+=`<line x1="${xs[j]}" y1="${yy(v[j])}" x2="${xs[j+1]}" y2="${yy(v[j+1])}" stroke="#c9cfd6" stroke-width="2"/>`; });
+  st.forEach((sg,j)=>{ const v=D.map(d=>d[j]), m=median(v);
+    v.forEach(d=>{ s+=`<circle cx="${xs[j]}" cy="${yy(d)}" r="11" fill="${COL[sg]}" stroke="#fff" stroke-width="1.5"/>`; });
+    s+=`<line x1="${xs[j]-28}" x2="${xs[j]+28}" y1="${yy(m)}" y2="${yy(m)}" stroke="#111" stroke-width="4.5"/>`;
+    const w=FIG_TITLE[sg].replace(" alignment","").replace("after ","After ").replace("before","Before");
+    s+=t(xs[j], pb+38, w, 'font-size="26" text-anchor="middle"')+t(xs[j], pb+70, "alignment", 'font-size="26" text-anchor="middle"'); });
+  // landmark names next to the last column, spread so they do not overlap
+  const last=st.length-1, order=lms.map((n,i)=>i).sort((a,b)=>D[b][last]-D[a][last]); let prevY=-1e9;
+  order.forEach(i=>{ let yv=yy(D[i][last])+9; if(yv<prevY+30) yv=prevY+30; prevY=yv; s+=t(xs[last]+40, yv, lmLabel(lms[i],sp), 'font-size="24"'); });
+  s+=`<line x1="${pl}" x2="${pl+36}" y1="${pb+108}" y2="${pb+108}" stroke="#111" stroke-width="4.5"/>`+t(pl+46, pb+116, "Median", 'font-size="24"');
+  // close-ups
+  const cTop=TOP+IH+90, RL=X0+60, nL=lms.length, cg=12, CW=Math.min(420,(W-RL-30-cg*(nL-1))/nL), CH=Math.round(CW*0.55);
+  const cw=Math.round(Math.max(ref.w,ref.h)*0.11), ch=Math.round(cw*0.55);
+  s+=t(X0-10, cTop-30, `${letters[li++]}`, 'font-size="32" font-weight="bold"');
+  lms.forEach((n,j)=>{ const x=RL+j*(CW+cg);
+    s+=t(x+CW/2, cTop-14, lmLabel(n,sp), 'font-size="30" font-weight="bold" text-anchor="middle"');
+    ims.forEach((e,i)=>{ const y=cTop+i*(CH+cg), p=e.points[n];
+      const x0=Math.round(p[0]-cw/2), y0=Math.round(p[1]-ch/2);
+      s+=`<image x="${x}" y="${y}" width="${CW}" height="${CH}" preserveAspectRatio="none" href="${figImageURL(e,x0,y0,cw,ch,CW*2,"png")}"/><rect x="${x}" y="${y}" width="${CW}" height="${CH}" fill="none" stroke="#222" stroke-width="1"/>`;
+      s+=`<circle cx="${x+(p[0]-x0)*CW/cw}" cy="${y+(p[1]-y0)*CH/ch}" r="${Math.max(10,CH*0.1)}" fill="none" stroke="${e.role==="ref"?FIG_REF:FIG_ALN}" stroke-width="4.5"/>`;
+      if(j===0) s+=`<text transform="translate(${RL-16} ${y+CH/2}) rotate(-90)" font-size="26" text-anchor="middle">${esc(e.role==="ref"?"Reference":{raw:"Before",rough:"Rough",fine:"Fine"}[e.role])}</text>`;
+    });
+  });
+  const H=cTop+nI*(CH+cg)+20;
+  return {svg:`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="Arial, Helvetica, sans-serif" fill="#111"><rect width="100%" height="100%" fill="#fff"/>${s}</svg>`, round};
+}
+$("#mkFig").onclick=()=>{
+  const r=buildFigure();
+  $("#figWrap").innerHTML = r.err ? `<p class="note" style="padding:10px">${esc(r.err)}</p>` : r.svg;
+  if(!r.err) $("#figWrap svg").style.cssText="width:100%;height:auto";
+};
+{ const [svgDl, pngDl]=svgDownloads("#figWrap", "landmark_figure");
+  $("#dlFigSvg").onclick=()=>{ if(!$("#figWrap svg")) $("#mkFig").click(); if($("#figWrap svg")) download("landmark_figure.svg", $("#figWrap svg").outerHTML.replace(/ style="[^"]*"/,""), "image/svg+xml"); };
+  $("#dlFigPng").onclick=()=>{ if(!$("#figWrap svg")) $("#mkFig").click(); if($("#figWrap svg")) pngDl(); }; }
 
 $("#saveSession").onclick=()=>{
   const s={app:"RAMFISH Landmark Check", version:1, saved:new Date().toISOString(),
